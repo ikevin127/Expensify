@@ -3157,6 +3157,16 @@ const CONST = {
     MINI_CONTEXT_MENU_MAX_ITEMS: 4,
 
     REPORT_FIELD_TITLE_FIELD_ID: 'text_title',
+
+    COMMENT_HTML_REGEX_MAP: {
+        '<div dir="ltr">|<\\/div>': '',
+        '<a href="(.*)">(.*)<\\/a>': '$1',
+        '<br \\/>': '\n',
+        '@mailto:': '@',
+        '&gt;': '>',
+        '&lt;': '<',
+        'mailto:': '',
+    },
 } as const;
 
 type Country = keyof typeof CONST.ALL_COUNTRIES;
