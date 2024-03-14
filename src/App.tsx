@@ -5,6 +5,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {PickerStateProvider} from 'react-native-picker-select';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import '../wdyr';
+import { DeviceEventListenerProvider } from './components/DeviceEventListenerProvider';
 import ActiveElementRoleProvider from './components/ActiveElementRoleProvider';
 import ActiveWorkspaceContextProvider from './components/ActiveWorkspace/ActiveWorkspaceProvider';
 import ColorSchemeWrapper from './components/ColorSchemeWrapper';
@@ -78,6 +79,7 @@ function App({url}: AppProps) {
                         PlaybackContextProvider,
                         VolumeContextProvider,
                         VideoPopoverMenuContextProvider,
+                        DeviceEventListenerProvider,
                     ]}
                 >
                     <CustomStatusBarAndBackground />

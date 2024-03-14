@@ -3,7 +3,7 @@ import {useIsFocused, useRoute} from '@react-navigation/native';
 import type {RouteProp} from '@react-navigation/native';
 import type {DebouncedFunc} from 'lodash';
 import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {DeviceEventEmitter, InteractionManager} from 'react-native';
+import {InteractionManager} from 'react-native';
 import type {LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent, StyleProp, ViewStyle} from 'react-native';
 import type {OnyxEntry} from 'react-native-onyx';
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
@@ -27,6 +27,7 @@ import CONST from '@src/CONST';
 import type SCREENS from '@src/SCREENS';
 import type * as OnyxTypes from '@src/types/onyx';
 import type {EmptyObject} from '@src/types/utils/EmptyObject';
+import { useDeviceEventListeners } from '@components/DeviceEventListenerProvider';
 import FloatingMessageCounter from './FloatingMessageCounter';
 import ListBoundaryLoader from './ListBoundaryLoader';
 import ReportActionsListItemRenderer from './ReportActionsListItemRenderer';
@@ -238,6 +239,15 @@ function ReportActionsList({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [report.lastReadTime, report.reportID]);
 
+    const {
+        subscribeToUnreadAction,
+        subscribeToReadNewestAction,
+        subscribeToDeletedReportAction,
+        unsubscribeFromUnreadAction,
+        unsubscribeFromReadNewestAction,
+        unsubscribeFromDeletedReportAction,
+    } = useDeviceEventListeners();
+
     useEffect(() => {
         const resetUnreadMarker = (newLastReadTime: string) => {
             cacheUnreadMarkers.delete(report.reportID);
@@ -245,17 +255,23 @@ function ReportActionsList({
             setCurrentUnreadMarker(null);
         };
 
-        const unreadActionSubscription = DeviceEventEmitter.addListener(`unreadAction_${report.reportID}`, (newLastReadTime) => {
+        subscribeToUnreadAction(report.reportID, newLastReadTime => {
+            // eslint-disable-next-line no-console
+            console.log('unreadAction -> newLastReadTime:', newLastReadTime);
             resetUnreadMarker(newLastReadTime);
             setMessageManuallyMarkedUnread(new Date().getTime());
         });
 
-        const readNewestActionSubscription = DeviceEventEmitter.addListener(`readNewestAction_${report.reportID}`, (newLastReadTime) => {
+        subscribeToReadNewestAction(report.reportID, newLastReadTime => {
+            // eslint-disable-next-line no-console
+            console.log('readNewestAction -> newLastReadTime:', newLastReadTime);
             resetUnreadMarker(newLastReadTime);
             setMessageManuallyMarkedUnread(0);
         });
 
-        const deletedReportActionSubscription = DeviceEventEmitter.addListener(`deletedReportAction_${report.reportID}`, (reportActionID) => {
+        subscribeToDeletedReportAction(report.reportID, reportActionID => {
+            // eslint-disable-next-line no-console
+            console.log('deletedReportAction -> reportActionID:', reportActionID);
             if (cacheUnreadMarkers.get(report.reportID) !== reportActionID) {
                 return;
             }
@@ -264,11 +280,11 @@ function ReportActionsList({
         });
 
         return () => {
-            unreadActionSubscription.remove();
-            readNewestActionSubscription.remove();
-            deletedReportActionSubscription.remove();
+            unsubscribeFromUnreadAction(report.reportID);
+            unsubscribeFromReadNewestAction(report.reportID);
+            unsubscribeFromDeletedReportAction(report.reportID);
         };
-    }, [report.reportID]);
+    }, [report.reportID, subscribeToReadNewestAction, subscribeToUnreadAction, unsubscribeFromReadNewestAction, unsubscribeFromUnreadAction, subscribeToDeletedReportAction, unsubscribeFromDeletedReportAction]);
 
     useEffect(() => {
         InteractionManager.runAfterInteractions(() => {
