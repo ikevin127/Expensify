@@ -23,15 +23,15 @@ function PlaybackContextProvider({children}: ChildrenProps) {
         currentVideoPlayerRef.current?.stopAsync?.();
     }, [currentVideoPlayerRef]);
 
-    const playVideo = useCallback(() => {
+    const playVideo = useCallback(() => 
         currentVideoPlayerRef.current?.getStatusAsync?.().then((status) => {
             const newStatus: AVPlaybackStatusToSet = {shouldPlay: true};
             if ('durationMillis' in status && status.durationMillis === status.positionMillis) {
                 newStatus.positionMillis = 0;
             }
-            currentVideoPlayerRef.current?.setStatusAsync(newStatus);
-        });
-    }, [currentVideoPlayerRef]);
+            return currentVideoPlayerRef.current?.setStatusAsync(newStatus);
+        }),
+    [currentVideoPlayerRef]);
 
     const unloadVideo = useCallback(() => {
         currentVideoPlayerRef.current?.unloadAsync?.();
