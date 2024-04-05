@@ -1,4 +1,4 @@
-import type {Video} from 'expo-av';
+import type {AVPlaybackStatus, Video} from 'expo-av';
 import type {MutableRefObject} from 'react';
 import type {View} from 'react-native';
 import type {SharedValue} from 'react-native-reanimated';
@@ -13,8 +13,8 @@ type PlaybackContext = {
     sharedElement: View | null;
     currentVideoPlayerRef: MutableRefObject<Video | null>;
     shareVideoPlayerElements: (ref: Video, parent: View, child: View, isUploading: boolean) => void;
-    playVideo: () => void;
-    pauseVideo: () => void;
+    playVideo: () => Promise<AVPlaybackStatus | undefined> | undefined;
+    pauseVideo: () => Promise<AVPlaybackStatus> | undefined;
     checkVideoPlaying: (statusCallback: StatusCallback) => void;
 };
 

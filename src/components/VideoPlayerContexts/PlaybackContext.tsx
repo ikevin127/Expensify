@@ -15,9 +15,7 @@ function PlaybackContextProvider({children}: ChildrenProps) {
     const {currentReportID} = useCurrentReportID() ?? {};
     const videoResumeTryNumber = useRef(0);
 
-    const pauseVideo = useCallback(() => {
-        currentVideoPlayerRef.current?.setStatusAsync?.({shouldPlay: false});
-    }, [currentVideoPlayerRef]);
+    const pauseVideo = useCallback(() => currentVideoPlayerRef.current?.setStatusAsync?.({shouldPlay: false}), [currentVideoPlayerRef]);
 
     const stopVideo = useCallback(() => {
         currentVideoPlayerRef.current?.stopAsync?.();

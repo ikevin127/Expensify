@@ -71,6 +71,7 @@ function BaseVideoPlayer({
     const isCurrentlyURLSet = currentlyPlayingURL === url;
     const isUploading = _.some(CONST.ATTACHMENT_LOCAL_URL_PREFIX, (prefix) => url.startsWith(prefix));
     const videoStateRef = useRef(null);
+    const shouldFreezePlayIconRef = useRef(true);
 
     const togglePlayCurrentVideo = useCallback(() => {
         videoResumeTryNumber.current = 0;
@@ -158,6 +159,13 @@ function BaseVideoPlayer({
         });
     }, [currentVideoPlayerRef, handleFullscreenUpdate, handlePlaybackStatusUpdate]);
 
+    const playPauseForVideoPreview = useCallback(() => playVideo().then(() => {
+        pauseVideo().then(() => {
+            // Set the ref to false for the play / pause icons to be shown as expected based on isPlaying
+            shouldFreezePlayIconRef.current = false;
+        });
+    }), [pauseVideo, playVideo]);
+
     useEffect(() => {
         if (!isUploading || !videoPlayerRef.current) {
             return;
@@ -165,10 +173,13 @@ function BaseVideoPlayer({
 
         // If we are uploading a new video, we want to immediately set the video player ref.
         currentVideoPlayerRef.current = videoPlayerRef.current;
+        // Reset the ref to true to prevent the play / pause icons toggle until after the preview is set,
+        // this needs to always be done after we are uploading a new video (currentVideoPlayerRef reset)
+        shouldFreezePlayIconRef.current = true;
         // We play / pause in quick succession to skip the first
-        // milisecond of the video in order to display video preview the beginning
-        playVideo().then(() => pauseVideo());
-    }, [url, currentVideoPlayerRef, isUploading, playVideo, pauseVideo]);
+        // milisecond of the video in order to display video preview when uploading a new video
+        playPauseForVideoPreview();
+    }, [url, currentVideoPlayerRef, isUploading, playPauseForVideoPreview]);
 
     // update shared video elements
     useEffect(() => {
@@ -286,7 +297,7 @@ function BaseVideoPlayer({
                                     position={position}
                                     url={url}
                                     videoPlayerRef={videoPlayerRef}
-                                    isPlaying={isPlaying}
+                                    isPlaying={shouldFreezePlayIconRef.current ? false : isPlaying}
                                     small={shouldUseSmallVideoControls}
                                     style={videoControlsStyle}
                                     togglePlayCurrentVideo={togglePlayCurrentVideo}
