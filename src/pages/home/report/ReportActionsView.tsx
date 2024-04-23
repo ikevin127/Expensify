@@ -477,9 +477,6 @@ function ReportActionsView({
             createdAction.pendingAction = CONST.RED_BRICK_ROAD_PENDING_ACTION.UPDATE;
         }
 
-        // For testing purposes only
-        actions.filter((action) => action.actionName === 'ADDCOMMENT' && action.originalMessage?.type !== 'automated');
-
         return [...actions, createdAction];
     }, [reportActions, report, transactionThreadReport]);
 
@@ -498,7 +495,9 @@ function ReportActionsView({
                 parentReportAction={parentReportAction}
                 parentReportActionForTransactionThread={parentReportActionForTransactionThread}
                 onLayout={recordTimeToMeasureItemLayout}
-                sortedReportActions={reportActionsToDisplay}
+                // For testing purposes only
+                // @ts-expect-error - Testing
+                sortedReportActions={reportActionsToDisplay?.filter((action) => action.originalMessage?.type !== 'automated')}
                 mostRecentIOUReportActionID={mostRecentIOUReportActionID}
                 loadOlderChats={loadOlderChats}
                 loadNewerChats={loadNewerChats}
