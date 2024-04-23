@@ -137,6 +137,7 @@ type OriginalMessageAddComment = {
         moderationDecisions?: Decision[];
         whisperedTo: number[];
         reactions?: Reaction[];
+        type?: string;
     };
 };
 

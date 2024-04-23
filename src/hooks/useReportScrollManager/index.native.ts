@@ -20,13 +20,15 @@ function useReportScrollManager(): ReportScrollManagerData {
      * Scroll to the bottom of the flatlist.
      */
     const scrollToBottom = useCallback(() => {
-        if (!flatListRef?.current) {
-            return;
-        }
+        requestAnimationFrame(() => {
+            if (!flatListRef?.current) {
+                return;
+            }
 
-        setScrollPosition({offset: 0});
+            setScrollPosition({offset: 0});
 
-        flatListRef.current?.scrollToOffset({animated: false, offset: 0});
+            flatListRef.current?.scrollToOffset({animated: false, offset: 0});
+        });
     }, [flatListRef, setScrollPosition]);
 
     return {ref: flatListRef, scrollToIndex, scrollToBottom};

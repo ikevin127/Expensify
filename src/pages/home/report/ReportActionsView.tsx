@@ -477,6 +477,9 @@ function ReportActionsView({
             createdAction.pendingAction = CONST.RED_BRICK_ROAD_PENDING_ACTION.UPDATE;
         }
 
+        // For testing purposes only
+        actions.filter((action) => action.actionName === 'ADDCOMMENT' && action.originalMessage?.type !== 'automated');
+
         return [...actions, createdAction];
     }, [reportActions, report, transactionThreadReport]);
 
