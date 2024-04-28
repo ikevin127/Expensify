@@ -8,12 +8,12 @@ function useReportScrollManager(): ReportScrollManagerData {
     /**
      * Scroll to the provided index.
      */
-    const scrollToIndex = (index: number) => {
-        if (!flatListRef?.current) {
+    const scrollToIndex = (index: number, isEditing = false, viewPosition = 0) => {
+        if (!flatListRef?.current || isEditing) {
             return;
         }
 
-        flatListRef.current.scrollToIndex({index});
+        flatListRef.current.scrollToIndex({index, viewPosition});
     };
 
     /**
