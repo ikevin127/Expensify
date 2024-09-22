@@ -1,6 +1,8 @@
 import {setFailed} from '@actions/core';
 import {context} from '@actions/github';
 import type {IssueCommentCreatedEvent, IssueCommentEditedEvent, IssueCommentEvent} from '@octokit/webhooks-types';
+import {format} from 'date-fns';
+import {utcToZonedTime} from 'date-fns-tz';
 import CONST from '@github/libs/CONST';
 import GithubUtils from '@github/libs/GithubUtils';
 import OpenAIUtils from '@github/libs/OpenAIUtils';
@@ -15,8 +17,11 @@ function isCommentCreatedEvent(payload: IssueCommentEvent): payload is IssueComm
 
 // Main function to process the workflow event
 async function run() {
-    // get date early, as soon as the workflow starts running
-    const date = new Date();
+    // Capture the timestamp immediately at the start of the run
+    const now = Date.now();
+    const zonedDate = utcToZonedTime(now, 'UTC');
+    const formattedDate = format(zonedDate, "yyyy-MM-dd HH:mm:ss 'UTC'");
+
     // Verify this is running for an expected webhook event
     if (context.eventName !== CONST.EVENTS.ISSUE_COMMENT) {
         throw new Error('ProposalPolice™ only supports the issue_comment webhook event');
@@ -90,7 +95,6 @@ async function run() {
         // bot related action keyword
         let extractedNotice = assistantResponse.split('[EDIT_COMMENT] ')?.[1]?.replace('"', '');
         // format the date like: 2024-01-24 13:15:24 UTC not 2024-01-28 18:18:28.000 UTC
-        const formattedDate = `${date.toISOString()?.split('.')?.[0]?.replace('T', ' ')} UTC`;
         extractedNotice = extractedNotice.replace('{updated_timestamp}', formattedDate);
         console.log('ProposalPolice™ editing issue comment...', payload.comment.id);
         await GithubUtils.octokit.issues.updateComment({
