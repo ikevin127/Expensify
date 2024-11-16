@@ -59,6 +59,22 @@ function getCurrencySymbol(currencyCode: string): string | undefined {
 }
 
 /**
+ * Get the country code for a certain currency(ISO 4217) Code
+ */
+function getCurrencyCountryCodes(currencyCode: keyof typeof CONST.CURRENCY): Array<keyof typeof CONST.ALL_COUNTRIES> {
+    const currencyCountryMap: Record<keyof typeof CONST.CURRENCY, Array<keyof typeof CONST.ALL_COUNTRIES>> = {
+        [CONST.CURRENCY.USD]: ['US'],
+        [CONST.CURRENCY.AUD]: ['AU'],
+        [CONST.CURRENCY.CAD]: ['CA'],
+        [CONST.CURRENCY.GBP]: ['GB'],
+        [CONST.CURRENCY.NZD]: ['NZ'],
+        [CONST.CURRENCY.EUR]: ['AT', 'BE', 'CY', 'EE', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PT', 'SK', 'SI', 'ES'],
+    };
+
+    return currencyCountryMap[currencyCode] ?? [];
+}
+
+/**
  * Whether the currency symbol is left-to-right.
  */
 function isCurrencySymbolLTR(currencyCode: string): boolean {
@@ -202,6 +218,7 @@ export {
     getCurrencyUnit,
     getLocalizedCurrencySymbol,
     getCurrencySymbol,
+    getCurrencyCountryCodes,
     isCurrencySymbolLTR,
     convertToBackendAmount,
     convertToFrontendAmountAsInteger,

@@ -17,6 +17,7 @@ import TextInput from '@components/TextInput';
 import TextLink from '@components/TextLink';
 import useLocalize from '@hooks/useLocalize';
 import useThemeStyles from '@hooks/useThemeStyles';
+import * as CurrencyUtils from '@libs/CurrencyUtils';
 import * as ValidationUtils from '@libs/ValidationUtils';
 import CONST from '@src/CONST';
 import type {TranslationPaths} from '@src/languages/types';
@@ -165,8 +166,27 @@ function PaymentCardForm({
             errors.addressStreet = translate(label.error.addressStreet);
         }
 
-        if (values.addressZipCode && !ValidationUtils.isValidZipCode(values.addressZipCode)) {
-            errors.addressZipCode = translate(label.error.addressZipCode);
+        // Use provided currency or default to USD
+        const currency = data?.currency ?? CONST.PAYMENT_CARD_CURRENCY.USD;
+        // Get countries associated with the currency
+        const countries = CurrencyUtils.getCurrencyCountryCodes(currency);
+
+        // Check if the addressZipCode matches any country-specific regex
+        if (values.addressZipCode) {
+            const zipCode = values.addressZipCode.trim();
+            const isValidZip = countries.some((countryCode) => {
+                const regexDetails = CONST.COUNTRY_ZIP_REGEX_DATA[countryCode];
+                // Optionally: check for empty string after trim
+                if (!zipCode) {
+                    return false;
+                }
+
+                return 'regex' in regexDetails && regexDetails.regex.test(zipCode);
+            });
+
+            if (!isValidZip) {
+                errors.addressZipCode = translate(label.error.addressZipCode);
+            }
         }
 
         if (!values.acceptTerms) {
