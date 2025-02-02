@@ -3628,7 +3628,7 @@ const translations = {
             deleteFailureMessage: 'Se ha producido un error al intentar eliminar la categoría. Por favor, inténtalo más tarde.',
             categoryName: 'Nombre de la categoría',
             requiresCategory: 'Los miembros deben clasificar todos los gastos',
-            needCategoryForExportToIntegration: 'Se requiere una categoría en cada gasto para poder exportarlo a',
+            needCategoryForExportToIntegration: 'Las categorías se importan y son requeridas para cada gasto exportado a',
             subtitle: 'Obtén una visión general de dónde te gastas el dinero. Utiliza las categorías predeterminadas o añade las tuyas propias.',
             emptyCategories: {
                 title: 'No has creado ninguna categoría',

@@ -3586,7 +3586,7 @@ const translations = {
             deleteFailureMessage: 'An error occurred while deleting the category, please try again.',
             categoryName: 'Category name',
             requiresCategory: 'Members must categorize all expenses',
-            needCategoryForExportToIntegration: 'Require a category on every expense in order to export to',
+            needCategoryForExportToIntegration: 'Categories are imported and required for every expense exported to',
             subtitle: 'Get a better overview of where money is being spent. Use our default categories or add your own.',
             emptyCategories: {
                 title: "You haven't created any categories",

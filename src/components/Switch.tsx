@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import Animated, {interpolateColor, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import Tooltip from '@components/Tooltip';
 import useTheme from '@hooks/useTheme';
 import useThemeStyles from '@hooks/useThemeStyles';
 import CONST from '@src/CONST';
@@ -25,6 +26,12 @@ type SwitchProps = {
 
     /** Callback to fire when the switch is toggled in disabled state */
     disabledAction?: () => void;
+
+    /** Whether to show a tooltip wrapping the switch toggle */
+    shouldShowTooltip?: boolean;
+
+    /** Tooltip text */
+    tooltipText?: string;
 };
 
 const OFFSET_X = {
@@ -32,7 +39,7 @@ const OFFSET_X = {
     ON: 20,
 };
 
-function Switch({isOn, onToggle, accessibilityLabel, disabled, showLockIcon, disabledAction}: SwitchProps) {
+function Switch({isOn, onToggle, accessibilityLabel, disabled, showLockIcon, disabledAction, shouldShowTooltip = false, tooltipText}: SwitchProps) {
     const styles = useThemeStyles();
     const offsetX = useSharedValue(isOn ? OFFSET_X.ON : OFFSET_X.OFF);
     const theme = useTheme();
@@ -60,30 +67,35 @@ function Switch({isOn, onToggle, accessibilityLabel, disabled, showLockIcon, dis
     }));
 
     return (
-        <PressableWithFeedback
-            disabled={!disabledAction && disabled}
-            onPress={handleSwitchPress}
-            onLongPress={handleSwitchPress}
-            role={CONST.ROLE.SWITCH}
-            aria-checked={isOn}
-            accessibilityLabel={accessibilityLabel}
-            // disable hover dim for switch
-            hoverDimmingValue={1}
-            pressDimmingValue={0.8}
+        <Tooltip
+            shouldRender={shouldShowTooltip}
+            text={tooltipText}
         >
-            <Animated.View style={[styles.switchTrack, animatedSwitchTrackStyle]}>
-                <Animated.View style={[styles.switchThumb, animatedThumbStyle]}>
-                    {(!!disabled || !!showLockIcon) && (
-                        <Icon
-                            src={Expensicons.Lock}
-                            fill={isOn ? theme.text : theme.icon}
-                            width={styles.toggleSwitchLockIcon.width}
-                            height={styles.toggleSwitchLockIcon.height}
-                        />
-                    )}
+            <PressableWithFeedback
+                disabled={!disabledAction && disabled}
+                onPress={handleSwitchPress}
+                onLongPress={handleSwitchPress}
+                role={CONST.ROLE.SWITCH}
+                aria-checked={isOn}
+                accessibilityLabel={accessibilityLabel}
+                // disable hover dim for switch
+                hoverDimmingValue={1}
+                pressDimmingValue={0.8}
+            >
+                <Animated.View style={[styles.switchTrack, animatedSwitchTrackStyle]}>
+                    <Animated.View style={[styles.switchThumb, animatedThumbStyle]}>
+                        {(!!disabled || !!showLockIcon) && (
+                            <Icon
+                                src={Expensicons.Lock}
+                                fill={isOn ? theme.text : theme.icon}
+                                width={styles.toggleSwitchLockIcon.width}
+                                height={styles.toggleSwitchLockIcon.height}
+                            />
+                        )}
+                    </Animated.View>
                 </Animated.View>
-            </Animated.View>
-        </PressableWithFeedback>
+            </PressableWithFeedback>
+        </Tooltip>
     );
 }
 

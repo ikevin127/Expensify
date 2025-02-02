@@ -104,6 +104,8 @@ function WorkspaceCategoriesSettingsPage({policy, route}: WorkspaceCategoriesSet
                     <ToggleSettingOptionRow
                         title={translate('workspace.categories.requiresCategory')}
                         subtitle={toggleSubtitle}
+                        shouldShowTooltip={isToggleDisabled}
+                        tooltipText={toggleSubtitle}
                         switchAccessibilityLabel={translate('workspace.categories.requiresCategory')}
                         isActive={policy?.requiresCategory ?? false}
                         onToggle={updateWorkspaceRequiresCategory}

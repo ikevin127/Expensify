@@ -77,6 +77,12 @@ type ToggleSettingOptionRowProps = {
 
     /** Callback to fire when the switch is toggled in disabled state */
     disabledAction?: () => void;
+
+    /** Whether to show a tooltip wrapping the switch toggle */
+    shouldShowTooltip?: boolean;
+
+    /** Tooltip text */
+    tooltipText?: string;
 };
 const ICON_SIZE = 48;
 
@@ -102,6 +108,8 @@ function ToggleSettingOptionRow({
     onCloseError,
     disabled = false,
     showLockIcon = false,
+    shouldShowTooltip = false,
+    tooltipText,
 }: ToggleSettingOptionRowProps) {
     const styles = useThemeStyles();
     const isExpanded = useSharedValue(isActive);
@@ -190,6 +198,8 @@ function ToggleSettingOptionRow({
                         isOn={isActive}
                         disabled={disabled}
                         showLockIcon={showLockIcon}
+                        shouldShowTooltip={shouldShowTooltip}
+                        tooltipText={tooltipText}
                     />
                 </View>
                 {shouldPlaceSubtitleBelowSwitch && subtitle && subTitleView}
