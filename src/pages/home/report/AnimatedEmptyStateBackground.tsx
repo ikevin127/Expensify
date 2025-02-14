@@ -1,4 +1,5 @@
-import React from 'react';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import Animated, {clamp, SensorType, useAnimatedSensor, useAnimatedStyle, useReducedMotion, useSharedValue, withSpring} from 'react-native-reanimated';
 import useResponsiveLayout from '@hooks/useResponsiveLayout';
@@ -29,11 +30,32 @@ function AnimatedEmptyStateBackground() {
     const xOffset = useSharedValue(0);
     const yOffset = useSharedValue(0);
     const isReducedMotionEnabled = useReducedMotion();
+    const shouldDelayAnimation = useSharedValue(true);
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        const timeoutID = setTimeout(() => {
+            shouldDelayAnimation.set(false);
+        }, CONST.BACKGROUND_IMAGE_ANIMATION_DELAY);
+        return () => {
+            if (!shouldDelayAnimation.get()) {
+                shouldDelayAnimation.set(true);
+            }
+            clearTimeout(timeoutID);
+        };
+        // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+    }, [isFocused]);
 
     // Apply data to create style object
     const animatedStyles = useAnimatedStyle(() => {
         if (!shouldUseNarrowLayout || isReducedMotionEnabled) {
             return {};
+        }
+
+        if (shouldDelayAnimation.get()) {
+            return {
+                transform: [{translateX: 0}, {translateY: 0}, {scale: 1.15}],
+            };
         }
         /*
          * We use x and y gyroscope velocity and add it to position offset to move background based on device movements.
