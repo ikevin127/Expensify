@@ -1,4 +1,4 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {View} from 'react-native';
 import type {NativeScrollEvent, NativeSyntheticEvent, StyleProp, ViewStyle} from 'react-native';
@@ -20,7 +20,7 @@ import {canUseTouchScreen} from '@libs/DeviceCapabilities';
 import Log from '@libs/Log';
 import memoize from '@libs/memoize';
 import isSearchTopmostFullScreenRoute from '@libs/Navigation/helpers/isSearchTopmostFullScreenRoute';
-import type {PlatformStackNavigationProp} from '@libs/Navigation/PlatformStackNavigation/types';
+import type {PlatformStackNavigationProp, PlatformStackRouteProp} from '@libs/Navigation/PlatformStackNavigation/types';
 import {generateReportID} from '@libs/ReportUtils';
 import {buildSearchQueryString} from '@libs/SearchQueryUtils';
 import {
@@ -35,12 +35,13 @@ import {
 } from '@libs/SearchUIUtils';
 import {isOnHold} from '@libs/TransactionUtils';
 import Navigation from '@navigation/Navigation';
-import type {AuthScreensParamList} from '@navigation/types';
+import type {AuthScreensParamList, SearchNavigatorParamList} from '@navigation/types';
 import EmptySearchView from '@pages/Search/EmptySearchView';
 import variables from '@styles/variables';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
 import ROUTES from '@src/ROUTES';
+import type SCREENS from '@src/SCREENS';
 import type SearchResults from '@src/types/onyx/SearchResults';
 import {useSearchContext} from './SearchContext';
 import type {SearchColumnType, SearchQueryJSON, SearchStatus, SelectedTransactionInfo, SelectedTransactions, SortOrder} from './types';
@@ -158,16 +159,24 @@ function Search({queryJSON, onSearchListScroll, isSearchScreenFocused, contentCo
     const [reportActions] = useOnyx(ONYXKEYS.COLLECTION.REPORT_ACTIONS);
     const previousReportActions = usePrevious(reportActions);
 
+    const route = useRoute<PlatformStackRouteProp<SearchNavigatorParamList, typeof SCREENS.SEARCH.ROOT>>();
+    const parsedLastNonEmptySearchResults = JSON.parse(route.params?.lastNonEmptySearchResults ?? '{}') as SearchResults;
+
     useEffect(() => {
-        if (!currentSearchResults?.search?.type) {
+        const parsedLastNonEmptySearchResultsLength = Object.keys(parsedLastNonEmptySearchResults ?? {})?.length;
+        const hasCurrentSearchType = currentSearchResults?.search?.type;
+
+        if (!parsedLastNonEmptySearchResultsLength || !hasCurrentSearchType) {
             return;
         }
 
         setLastSearchType(currentSearchResults.search.type);
-        if (currentSearchResults.data) {
-            setLastNonEmptySearchResults(currentSearchResults);
+        const isParsedLastNonEmptySearchResultsDataLength = Object.keys(parsedLastNonEmptySearchResults.data ?? {})?.length > 0;
+        const isDifferentLastNonEmptySearchResultsLength = Object.keys(lastNonEmptySearchResults?.data ?? {})?.length !== Object.keys(parsedLastNonEmptySearchResults.data ?? {})?.length;
+        if (isParsedLastNonEmptySearchResultsDataLength && isDifferentLastNonEmptySearchResultsLength) {
+            setLastNonEmptySearchResults(parsedLastNonEmptySearchResults);
         }
-    }, [lastSearchType, queryJSON, setLastSearchType, currentSearchResults]);
+    }, [currentSearchResults, lastNonEmptySearchResults, parsedLastNonEmptySearchResults, setLastSearchType]);
 
     const canSelectMultiple = isSmallScreenWidth ? !!selectionMode?.isEnabled : true;
 
@@ -233,7 +242,7 @@ function Search({queryJSON, onSearchListScroll, isSearchScreenFocused, contentCo
         },
     });
 
-    const searchResults = currentSearchResults?.data ? currentSearchResults : lastNonEmptySearchResults;
+    const searchResults = Object.keys(currentSearchResults?.data ?? {})?.length > 0 ? currentSearchResults : lastNonEmptySearchResults;
 
     const {newSearchResultKey, handleSelectionListScroll} = useSearchHighlightAndScroll({
         searchResults,
@@ -437,14 +446,18 @@ function Search({queryJSON, onSearchListScroll, isSearchScreenFocused, contentCo
         }
 
         const backTo = Navigation.getActiveRoute();
+        Navigation.setParams({
+            backTo,
+            ...(Object.keys(currentSearchResults?.data ?? {})?.length > 0 && {lastNonEmptySearchResults: JSON.stringify(currentSearchResults)}),
+        });
 
         if (isReportActionListItemType(item)) {
             const reportActionID = item.reportActionID;
-            Navigation.navigate(ROUTES.SEARCH_REPORT.getRoute({reportID, reportActionID, backTo}));
+            Navigation.navigate(ROUTES.SEARCH_REPORT.getRoute({reportID, reportActionID}));
             return;
         }
 
-        Navigation.navigate(ROUTES.SEARCH_REPORT.getRoute({reportID, backTo}));
+        Navigation.navigate(ROUTES.SEARCH_REPORT.getRoute({reportID}));
     };
 
     const fetchMoreResults = () => {

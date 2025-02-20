@@ -1856,6 +1856,13 @@ type DebugParamList = {
     };
 };
 
+type SearchNavigatorParamList = {
+    [SCREENS.SEARCH.ROOT]: {
+        backTo?: Routes;
+        lastNonEmptySearchResults?: string;
+    };
+};
+
 type RootNavigatorParamList = PublicScreensParamList & AuthScreensParamList & LeftModalNavigatorParamList;
 
 type WorkspaceScreenName = keyof WorkspaceSplitNavigatorParamList;
@@ -1939,4 +1946,5 @@ export type {
     WorkspaceSplitNavigatorParamList,
     MigratedUserModalNavigatorParamList,
     WorkspaceConfirmationNavigatorParamList,
+    SearchNavigatorParamList,
 };
