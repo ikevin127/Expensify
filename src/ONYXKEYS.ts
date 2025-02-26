@@ -455,6 +455,9 @@ const ONYXKEYS = {
     /** Stores recently used currencies */
     RECENTLY_USED_CURRENCIES: 'nvp_recentlyUsedCurrencies',
 
+    /** Stores the last non empty search results */
+    LAST_SEARCH_RESULTS: 'nvp_lastNonEmptySearchResults',
+
     /** States whether we transitioned from OldDot to show only certain group of screens. It should be undefined on pure NewDot. */
     IS_SINGLE_NEW_DOT_ENTRY: 'isSingleNewDotEntry',
 
@@ -927,6 +930,7 @@ type OnyxValuesMapping = {
     [ONYXKEYS.RECENT_SEARCHES]: Record<string, OnyxTypes.RecentSearchItem>;
     [ONYXKEYS.SAVED_SEARCHES]: OnyxTypes.SaveSearch;
     [ONYXKEYS.RECENTLY_USED_CURRENCIES]: string[];
+    [ONYXKEYS.LAST_SEARCH_RESULTS]: OnyxTypes.SearchResults | undefined;
     [ONYXKEYS.ACTIVE_CLIENTS]: string[];
     [ONYXKEYS.DEVICE_ID]: string;
     [ONYXKEYS.IS_SIDEBAR_LOADED]: boolean;

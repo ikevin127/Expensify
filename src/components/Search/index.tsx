@@ -15,7 +15,7 @@ import useResponsiveLayout from '@hooks/useResponsiveLayout';
 import useSearchHighlightAndScroll from '@hooks/useSearchHighlightAndScroll';
 import useThemeStyles from '@hooks/useThemeStyles';
 import {turnOffMobileSelectionMode, turnOnMobileSelectionMode} from '@libs/actions/MobileSelectionMode';
-import {createTransactionThread, search} from '@libs/actions/Search';
+import {createTransactionThread, search, setLastSearchResults} from '@libs/actions/Search';
 import {canUseTouchScreen} from '@libs/DeviceCapabilities';
 import Log from '@libs/Log';
 import memoize from '@libs/memoize';
@@ -156,17 +156,23 @@ function Search({queryJSON, onSearchListScroll, isSearchScreenFocused, contentCo
     const previousTransactions = usePrevious(transactions);
     const [reportActions] = useOnyx(ONYXKEYS.COLLECTION.REPORT_ACTIONS);
     const previousReportActions = usePrevious(reportActions);
+    const [lastSearchResults] = useOnyx(ONYXKEYS.LAST_SEARCH_RESULTS);
 
     useEffect(() => {
-        if (!currentSearchResults?.search?.type) {
+        const lastSearchResultsLength = Object.keys(lastSearchResults ?? {})?.length;
+        const hasCurrentSearchType = currentSearchResults?.search?.type;
+
+        if (!lastSearchResultsLength || !hasCurrentSearchType) {
             return;
         }
 
         setLastSearchType(currentSearchResults.search.type);
-        if (currentSearchResults.data) {
-            setLastNonEmptySearchResults(currentSearchResults);
+        const isLastSearchResultsDataLength = Object.keys(lastSearchResults?.data ?? {})?.length > 0;
+        const isDifferentLastSearchResultsLength = Object.keys(lastNonEmptySearchResults?.data ?? {})?.length !== Object.keys(lastSearchResults?.data ?? {})?.length;
+        if (isLastSearchResultsDataLength && isDifferentLastSearchResultsLength) {
+            setLastNonEmptySearchResults(lastSearchResults);
         }
-    }, [lastSearchType, queryJSON, setLastSearchType, currentSearchResults]);
+    }, [currentSearchResults, lastNonEmptySearchResults, lastSearchResults, setLastSearchType]);
 
     const canSelectMultiple = isSmallScreenWidth ? !!selectionMode?.isEnabled : true;
 
@@ -175,7 +181,7 @@ function Search({queryJSON, onSearchListScroll, isSearchScreenFocused, contentCo
         setCurrentSearchHash(hash);
     }, [hash, clearSelectedTransactions, setCurrentSearchHash]);
 
-    const searchResults = currentSearchResults?.data ? currentSearchResults : lastNonEmptySearchResults;
+    const searchResults = Object.keys(currentSearchResults?.data ?? {})?.length > 0 ? currentSearchResults : lastNonEmptySearchResults;
     const isSearchResultsEmpty = !searchResults?.data || isSearchResultsEmptyUtil(searchResults);
 
     useEffect(() => {
@@ -432,6 +438,9 @@ function Search({queryJSON, onSearchListScroll, isSearchScreenFocused, contentCo
         if (!reportID) {
             return;
         }
+
+        // Set the last search results before navigating to the report
+        setLastSearchResults(lastNonEmptySearchResults);
 
         // If we're trying to open a legacy transaction without a transaction thread, let's create the thread and navigate the user
         if (isTransactionListItemType(item) && reportID === '0' && item.moneyRequestReportActionID) {

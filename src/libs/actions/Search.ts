@@ -418,6 +418,10 @@ function clearAdvancedFilters() {
     Onyx.merge(ONYXKEYS.FORMS.SEARCH_ADVANCED_FILTERS_FORM, values);
 }
 
+function setLastSearchResults(searchResults: SearchResults | undefined) {
+    Onyx.set(ONYXKEYS.LAST_SEARCH_RESULTS, searchResults);
+}
+
 export {
     saveSearch,
     search,
@@ -436,4 +440,5 @@ export {
     submitMoneyRequestOnSearch,
     openSearchFiltersCardPage,
     getLastPolicyPaymentMethod,
+    setLastSearchResults,
 };
