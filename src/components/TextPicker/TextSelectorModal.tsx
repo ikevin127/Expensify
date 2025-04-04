@@ -26,6 +26,7 @@ function TextSelectorModal({
     onClose,
     shouldClearOnClose,
     maxLength = CONST.CATEGORY_NAME_LIMIT,
+    customValidate,
     ...rest
 }: TextSelectorModalProps) {
     const {translate} = useLocalize();
@@ -57,9 +58,16 @@ function TextSelectorModal({
                 errors[rest.inputID] = translate('common.error.characterLimitExceedCounter', {length: formValue.length, limit: maxLength});
             }
 
+            if (customValidate && formValue !== undefined) {
+                const customError = customValidate(formValue);
+                if (customError) {
+                    errors[rest.inputID] = customError;
+                }
+            }
+
             return errors;
         },
-        [maxLength, rest.inputID, translate],
+        [maxLength, rest.inputID, translate, customValidate],
     );
 
     // In TextPicker, when the modal is hidden, it is not completely unmounted, so when it is shown again, the currentValue is not updated with the value prop.
@@ -93,6 +101,22 @@ function TextSelectorModal({
         }, [isVisible]),
     );
 
+    const handleSubmit = useCallback(
+        (data: FormOnyxValues<typeof ONYXKEYS.FORMS.TEXT_PICKER_MODAL_FORM>) => {
+            const submittedValue = data[rest.inputID] ?? '';
+            if (customValidate) {
+                const customError = customValidate(submittedValue);
+                if (customError) {
+                    return;
+                }
+            }
+
+            Keyboard.dismiss();
+            onValueSelected?.(submittedValue);
+        },
+        [customValidate, onValueSelected, rest.inputID],
+    );
+
     return (
         <Modal
             type={CONST.MODAL.MODAL_TYPE.RIGHT_DOCKED}
@@ -116,10 +140,7 @@ function TextSelectorModal({
                 <FormProvider
                     formID={ONYXKEYS.FORMS.TEXT_PICKER_MODAL_FORM}
                     validate={validate}
-                    onSubmit={(data) => {
-                        Keyboard.dismiss();
-                        onValueSelected?.(data[rest.inputID] ?? '');
-                    }}
+                    onSubmit={handleSubmit}
                     submitButtonText={translate('common.save')}
                     style={[styles.mh5, styles.flex1]}
                     enabledWhenOffline

@@ -99,6 +99,16 @@ function CreateReportFieldsPage({
         [availableListValuesLength, policy?.fieldList, translate],
     );
 
+    const validateNameMinLength = useCallback(
+        (value: string): string | null => {
+            if (!value || value.trim().length < 1) {
+                return translate('workspace.reportFields.reportFieldNameRequiredError');
+            }
+            return null;
+        },
+        [translate],
+    );
+
     useEffect(() => {
         setInitialCreateReportFieldsForm();
     }, []);
@@ -148,6 +158,7 @@ function CreateReportFieldsPage({
                                 maxLength={CONST.WORKSPACE_REPORT_FIELD_POLICY_MAX_LENGTH}
                                 multiline={false}
                                 role={CONST.ROLE.PRESENTATION}
+                                customValidate={validateNameMinLength}
                             />
                             <InputWrapper
                                 InputComponent={TypeSelector}

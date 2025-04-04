@@ -24,6 +24,9 @@ type TextSelectorModalProps = {
 
     /** The ID used to uniquely identify the input in a Form */
     inputID: string;
+
+    /** Optional custom validation function to extend default validation */
+    customValidate?: (value: string) => string | null;
 } & Pick<MenuItemBaseProps, 'subtitle' | 'description'> &
     TextProps;
 
@@ -48,6 +51,9 @@ type TextPickerProps = {
 
     /** The ID used to uniquely identify the input in a Form */
     inputID: string;
+
+    /** Optional custom validation function to extend default validation */
+    customValidate?: (value: string) => string | null;
 } & Pick<MenuItemBaseProps, 'rightLabel' | 'subtitle' | 'description' | 'interactive'> &
     TextProps;
 
