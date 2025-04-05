@@ -3560,7 +3560,7 @@ const translations = {
             toggleImportTitleFirstPart: 'Elija cómo gestionar Sage Intacct ',
             toggleImportTitleSecondPart: ' en Expensify.',
             expenseTypes: 'Tipos de gastos',
-            expenseTypesDescription: 'Los facturas de proveedores de Sage Intacct se importan a Expensify como categorías.',
+            expenseTypesDescription: 'Los tipos de gastos de Sage Intacct se importan a Expensify como categorías.',
             vendorBills: 'Facturas de proveedores',
             vendorBillsDescription: 'Los facturas de proveedores de Sage Intacct se importan a Expensify como categorías.',
             importTaxDescription: 'Importar el tipo impositivo de compra desde Sage Intacct.',

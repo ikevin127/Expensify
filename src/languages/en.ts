@@ -3151,7 +3151,6 @@ const translations = {
         sageIntacct: {
             preferredExporter: 'Preferred exporter',
             notConfigured: 'Not configured',
-            import: {},
             exportDate: {
                 label: 'Export date',
                 description: 'Use this date when exporting reports to Sage Intacct.',
