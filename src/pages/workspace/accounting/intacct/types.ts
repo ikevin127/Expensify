@@ -56,4 +56,15 @@ type AccordionItem = {
     shouldAnimateSection: SharedValue<boolean>;
 };
 
-export type {MenuItem, ToggleItem, MenuItemWithSubscribedSettings, AccordionItem, ExtendedMenuItemWithSubscribedSettings, MenuItemToRender};
+type ImportOptionTranslations = {
+    /** The title of the import option */
+    title: string;
+
+    /** The subtitle of the import option */
+    subtitle: string;
+
+    /** The accessibility label of the import option */
+    accessibilityLabel: string;
+};
+
+export type {MenuItem, ToggleItem, MenuItemWithSubscribedSettings, AccordionItem, ExtendedMenuItemWithSubscribedSettings, MenuItemToRender, ImportOptionTranslations};

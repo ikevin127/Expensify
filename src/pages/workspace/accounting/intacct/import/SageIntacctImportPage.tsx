@@ -9,6 +9,7 @@ import {clearSageIntacctErrorField, updateSageIntacctBillable, updateSageIntacct
 import * as ErrorUtils from '@libs/ErrorUtils';
 import Navigation from '@libs/Navigation/Navigation';
 import {areSettingsInErrorFields, getCurrentSageIntacctEntityName, settingsPendingAction} from '@libs/PolicyUtils';
+import useSageIntacctImportTranslations from '@pages/workspace/accounting/intacct/hooks/useSageIntacctImportTranslations';
 import withPolicy from '@pages/workspace/withPolicy';
 import type {WithPolicyProps} from '@pages/workspace/withPolicy';
 import ToggleSettingOptionRow from '@pages/workspace/workflows/ToggleSettingsOptionRow';
@@ -46,6 +47,7 @@ function SageIntacctImportPage({policy}: WithPolicyProps) {
 
     const policyID: string = policy?.id ?? '-1';
     const sageIntacctConfig = policy?.connections?.intacct?.config;
+    const importTranslations = useSageIntacctImportTranslations(sageIntacctConfig);
 
     const mapingItems = useMemo(
         () =>
@@ -74,9 +76,9 @@ function SageIntacctImportPage({policy}: WithPolicyProps) {
             connectionName={CONST.POLICY.CONNECTIONS.NAME.SAGE_INTACCT}
         >
             <ToggleSettingOptionRow
-                title={translate('workspace.intacct.expenseTypes')}
-                subtitle={translate('workspace.intacct.expenseTypesDescription')}
-                switchAccessibilityLabel={translate('workspace.intacct.expenseTypesDescription')}
+                title={importTranslations.title}
+                subtitle={importTranslations.subtitle}
+                switchAccessibilityLabel={importTranslations.accessibilityLabel}
                 shouldPlaceSubtitleBelowSwitch
                 wrapperStyle={[styles.mv3, styles.mh5]}
                 isActive

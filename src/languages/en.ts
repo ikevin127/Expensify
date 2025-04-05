@@ -3151,6 +3151,7 @@ const translations = {
         sageIntacct: {
             preferredExporter: 'Preferred exporter',
             notConfigured: 'Not configured',
+            import: {},
             exportDate: {
                 label: 'Export date',
                 description: 'Use this date when exporting reports to Sage Intacct.',
@@ -3523,6 +3524,8 @@ const translations = {
             toggleImportTitleSecondPart: ' in Expensify.',
             expenseTypes: 'Expense types',
             expenseTypesDescription: 'Your Sage Intacct expense types will import into Expensify as categories.',
+            vendorBills: 'Vendor bills',
+            vendorBillsDescription: 'Your Sage Intacct vendor bills will import into Expensify as categories.',
             importTaxDescription: 'Import purchase tax rate from Sage Intacct.',
             userDefinedDimensions: 'User-defined dimensions',
             addUserDefinedDimension: 'Add user-defined dimension',
