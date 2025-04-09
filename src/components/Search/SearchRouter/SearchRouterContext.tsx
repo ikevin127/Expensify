@@ -1,7 +1,9 @@
 import React, {useContext, useMemo, useRef, useState} from 'react';
 import type {AnimatedTextInputRef} from '@components/RNTextInput';
 import isSearchTopmostFullScreenRoute from '@libs/Navigation/helpers/isSearchTopmostFullScreenRoute';
+import Navigation from '@libs/Navigation/Navigation';
 import * as Modal from '@userActions/Modal';
+import ROUTES from '@src/ROUTES';
 import type ChildrenProps from '@src/types/utils/ChildrenProps';
 
 type SearchRouterContext = {
@@ -51,7 +53,14 @@ function SearchRouterContextProvider({children}: ChildrenProps) {
         const toggleSearch = () => {
             const isUserOnSearchPage = isSearchTopmostFullScreenRoute();
 
-            if (isUserOnSearchPage && searchPageInputRef.current) {
+            const currentRoute = Navigation.getActiveRoute();
+            // Extract base route pattern without parameters (e.g. "search/r/" from "search/r/:reportID")
+            const searchMoneyRequestReportBaseRoute = ROUTES.SEARCH_MONEY_REQUEST_REPORT.route.split(':').at(0);
+            const isSearchMoneyRequestReportPage = currentRoute?.startsWith(`/${searchMoneyRequestReportBaseRoute}`);
+
+            // For the new money requests report screen, we always want to open the search router input modal
+            // since the page doesn't have a search input to focus
+            if (isUserOnSearchPage && !isSearchMoneyRequestReportPage && searchPageInputRef.current) {
                 if (searchPageInputRef.current.isFocused()) {
                     searchPageInputRef.current.blur();
                 } else {
