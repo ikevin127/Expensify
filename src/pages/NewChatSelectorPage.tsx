@@ -1,8 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useOnyx} from 'react-native-onyx';
+import type {NativeProps} from 'react-native-pager-view/lib/typescript/specs/PagerViewNativeComponent';
 import FocusTrapContainerElement from '@components/FocusTrap/FocusTrapContainerElement';
 import HeaderWithBackButton from '@components/HeaderWithBackButton';
+import type {AnimatedTextInputRef} from '@components/RNTextInput';
 import ScreenWrapper from '@components/ScreenWrapper';
 import TabSelector from '@components/TabSelector/TabSelector';
 import useLocalize from '@hooks/useLocalize';
@@ -39,6 +41,18 @@ function NewChatSelectorPage() {
         setNewRoomFormLoading(false);
     }, []);
 
+    const workspaceRoomInputRef = useRef<AnimatedTextInputRef>(null);
+    
+    const handleOnPageSelected: NativeProps['onPageSelected'] = (event) => {
+        const {position} = event.nativeEvent;
+        // eslint-disable-next-line no-console
+        console.log('position', position);
+        if (position === 0) {
+            return;
+        }
+        workspaceRoomInputRef.current?.focus();
+    };
+
     return (
         <ScreenWrapper
             shouldEnableKeyboardAvoidingView={false}
@@ -64,6 +78,7 @@ function NewChatSelectorPage() {
                 onTabBarFocusTrapContainerElementChanged={setTabBarContainerElement}
                 onActiveTabFocusTrapContainerElementChanged={onTabFocusTrapContainerElementChanged}
                 disableSwipe={!!formState?.isLoading && shouldUseNarrowLayout}
+                onPageSelected={handleOnPageSelected}
             >
                 <TopTab.Screen name={CONST.TAB.NEW_CHAT}>
                     {() => (
@@ -75,7 +90,7 @@ function NewChatSelectorPage() {
                 <TopTab.Screen name={CONST.TAB.NEW_ROOM}>
                     {() => (
                         <TabScreenWithFocusTrapWrapper>
-                            <WorkspaceNewRoomPage />
+                            <WorkspaceNewRoomPage ref={workspaceRoomInputRef} />
                         </TabScreenWithFocusTrapWrapper>
                     )}
                 </TopTab.Screen>

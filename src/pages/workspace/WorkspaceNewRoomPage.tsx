@@ -1,5 +1,4 @@
-import {useIsFocused} from '@react-navigation/core';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {useOnyx} from 'react-native-onyx';
 import type {ValueOf} from 'type-fest';
@@ -12,12 +11,12 @@ import * as Illustrations from '@components/Icon/Illustrations';
 import ImportedStateIndicator from '@components/ImportedStateIndicator';
 import KeyboardAvoidingView from '@components/KeyboardAvoidingView';
 import OfflineIndicator from '@components/OfflineIndicator';
+import type {AnimatedTextInputRef} from '@components/RNTextInput';
 import RoomNameInput from '@components/RoomNameInput';
 import ScreenWrapper from '@components/ScreenWrapper';
 import TextInput from '@components/TextInput';
 import ValuePicker from '@components/ValuePicker';
 import useActiveWorkspace from '@hooks/useActiveWorkspace';
-import useAutoFocusInput from '@hooks/useAutoFocusInput';
 import useLocalize from '@hooks/useLocalize';
 import useNetwork from '@hooks/useNetwork';
 import usePrevious from '@hooks/usePrevious';
@@ -39,9 +38,13 @@ import INPUT_IDS from '@src/types/form/NewRoomForm';
 import type * as OnyxCommon from '@src/types/onyx/OnyxCommon';
 import {isEmptyObject} from '@src/types/utils/EmptyObject';
 
-function WorkspaceNewRoomPage() {
+type WorkspaceNewRoomPageHandle = {
+    focus: () => void;
+};
+
+// @ts-expect-error - props is not used
+function WorkspaceNewRoomPage(props, ref: React.Ref<WorkspaceNewRoomPageHandle>) {
     const styles = useThemeStyles();
-    const isFocused = useIsFocused();
     const {translate} = useLocalize();
     const {isOffline} = useNetwork();
     const [policies] = useOnyx(ONYXKEYS.COLLECTION.POLICY);
@@ -59,6 +62,13 @@ function WorkspaceNewRoomPage() {
     const visibilityDescription = useMemo(() => translate(`newRoomPage.${visibility}Description`), [translate, visibility]);
     const {isLoading = false, errorFields = {}} = formState ?? {};
     const {activeWorkspaceID} = useActiveWorkspace();
+    const roomNameInputRef = useRef<AnimatedTextInputRef>(null);
+
+    useImperativeHandle(ref, () => ({
+        focus: () => {
+            roomNameInputRef.current?.focus();
+        },
+    }));
 
     const activeWorkspaceOrDefaultID = activeWorkspaceID ?? activePolicyID;
 
@@ -212,8 +222,6 @@ function WorkspaceNewRoomPage() {
         [translate],
     );
 
-    const {inputCallbackRef} = useAutoFocusInput();
-
     const renderEmptyWorkspaceView = () => (
         <>
             <BlockingView
@@ -271,12 +279,10 @@ function WorkspaceNewRoomPage() {
                     >
                         <View style={styles.mb5}>
                             <InputWrapper
+                                ref={roomNameInputRef}
                                 InputComponent={RoomNameInput}
-                                ref={inputCallbackRef}
                                 inputID={INPUT_IDS.ROOM_NAME}
-                                isFocused={isFocused}
-                                shouldDelayFocus
-                                autoFocus
+                                isFocused
                             />
                         </View>
                         <View style={styles.mb5}>
@@ -342,4 +348,4 @@ function WorkspaceNewRoomPage() {
 
 WorkspaceNewRoomPage.displayName = 'WorkspaceNewRoomPage';
 
-export default WorkspaceNewRoomPage;
+export default forwardRef(WorkspaceNewRoomPage);
