@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react';
 import {InteractionManager, View} from 'react-native';
 import {useOnyx} from 'react-native-onyx';
@@ -14,6 +15,7 @@ import ScreenWrapper from '@components/ScreenWrapper';
 import TextInput from '@components/TextInput';
 import ValuePicker from '@components/ValuePicker';
 import useActiveWorkspace from '@hooks/useActiveWorkspace';
+import useAutoFocusInput from '@hooks/useAutoFocusInput';
 import useBottomSafeSafeAreaPaddingStyle from '@hooks/useBottomSafeSafeAreaPaddingStyle';
 import useLocalize from '@hooks/useLocalize';
 import useNetwork from '@hooks/useNetwork';
@@ -21,6 +23,7 @@ import usePrevious from '@hooks/usePrevious';
 import useSafeAreaInsets from '@hooks/useSafeAreaInsets';
 import useThemeStyles from '@hooks/useThemeStyles';
 import {addErrorMessage} from '@libs/ErrorUtils';
+import getPlatform from '@libs/getPlatform';
 import localeCompare from '@libs/LocaleCompare';
 import Navigation from '@libs/Navigation/Navigation';
 import {getActivePolicies} from '@libs/PolicyUtils';
@@ -39,7 +42,7 @@ type WorkspaceNewRoomPageHandle = {
     focus: () => void;
 };
 
-// @ts-expect-error - props is not used
+// @ts-expect-error - props not used
 function WorkspaceNewRoomPage(props, ref: React.Ref<WorkspaceNewRoomPageHandle>) {
     const styles = useThemeStyles();
     const {translate} = useLocalize();
@@ -58,7 +61,23 @@ function WorkspaceNewRoomPage(props, ref: React.Ref<WorkspaceNewRoomPageHandle>)
     const visibilityDescription = useMemo(() => translate(`newRoomPage.${visibility}Description`), [translate, visibility]);
     const {isLoading = false, errorFields = {}} = formState ?? {};
     const {activeWorkspaceID} = useActiveWorkspace();
+    const isFocused = useIsFocused();
+    const isIOSNative = getPlatform() === CONST.PLATFORM.IOS;
+    // We're disabling the useAutoFocusInput functionality on iOS native because we're using the new `onPageSelected` focus method in `NewChatSelectorPage`, otherwise keeping it to align the behavior on all platforms
+    const {inputCallbackRef} = useAutoFocusInput(undefined, isIOSNative);
     const roomNameInputRef = useRef<AnimatedTextInputRef>(null);
+
+    const inputRefHandler = useCallback(
+        (inputRef: AnimatedTextInputRef) => {
+            if (!inputRef) {
+                return;
+            }
+            inputCallbackRef(inputRef);
+            // @ts-expect-error - inputRef.current is not read-only
+            roomNameInputRef.current = inputRef;
+        },
+        [inputCallbackRef],
+    );
 
     useImperativeHandle(ref, () => ({
         focus: () => {
@@ -266,10 +285,12 @@ function WorkspaceNewRoomPage(props, ref: React.Ref<WorkspaceNewRoomPageHandle>)
                 >
                     <View style={styles.mb5}>
                         <InputWrapper
-                            ref={roomNameInputRef}
+                            ref={inputRefHandler}
                             InputComponent={RoomNameInput}
                             inputID={INPUT_IDS.ROOM_NAME}
-                            isFocused
+                            // We're skipping the outdated autofocus logic on iOS native because we're using the new `onPageSelected` focus method in `NewChatSelectorPage`, otherwise keeping it to align the behavior on all platforms
+                            autoFocus={!isIOSNative}
+                            isFocused={isFocused}
                         />
                     </View>
                     <View style={styles.mb5}>
