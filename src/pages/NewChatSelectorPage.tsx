@@ -42,7 +42,7 @@ function NewChatSelectorPage() {
     }, []);
 
     const workspaceRoomInputRef = useRef<AnimatedTextInputRef>(null);
-    
+
     const handleOnPageSelected: NativeProps['onPageSelected'] = (event) => {
         const {position} = event.nativeEvent;
         // eslint-disable-next-line no-console
@@ -55,8 +55,8 @@ function NewChatSelectorPage() {
 
     return (
         <ScreenWrapper
+            enableEdgeToEdgeBottomSafeAreaPadding
             shouldEnableKeyboardAvoidingView={false}
-            includeSafeAreaPaddingBottom={false}
             shouldShowOfflineIndicator={false}
             shouldEnableMaxHeight
             testID={NewChatSelectorPage.displayName}
