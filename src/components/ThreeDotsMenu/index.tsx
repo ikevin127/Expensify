@@ -151,7 +151,6 @@ function ThreeDotsMenu({
                     hidePopoverMenu(item);
                 }}
                 menuItems={menuItems}
-                withoutOverlay={!shouldOverlay}
                 shouldSetModalVisibility={shouldSetModalVisibility}
                 anchorRef={buttonRef}
                 shouldEnableNewFocusManagement

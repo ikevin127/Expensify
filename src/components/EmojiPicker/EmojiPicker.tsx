@@ -203,7 +203,6 @@ function EmojiPicker({viewportOffsetTop}: EmojiPickerProps, ref: ForwardedRef<Em
                 horizontal: emojiPopoverAnchorPosition.horizontal,
             }}
             anchorRef={getEmojiPopoverAnchor() as RefObject<View | HTMLDivElement>}
-            withoutOverlay
             popoverDimensions={{
                 width: CONST.EMOJI_PICKER_SIZE.WIDTH,
                 height: CONST.EMOJI_PICKER_SIZE.HEIGHT,

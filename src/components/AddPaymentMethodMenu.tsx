@@ -131,7 +131,6 @@ function AddPaymentMethodMenu({
                 //     },
                 // ],
             ]}
-            withoutOverlay
             shouldEnableNewFocusManagement
             restoreFocusType={restoreFocusType}
         />

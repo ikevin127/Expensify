@@ -25,9 +25,6 @@ type PopoverProps = BaseModalProps &
         /** Whether disable the animations */
         disableAnimation?: boolean;
 
-        /** Whether we don't want to show overlay */
-        withoutOverlay?: boolean;
-
         /** The dimensions of the popover */
         popoverDimensions?: PopoverDimensions;
 
@@ -39,6 +36,9 @@ type PopoverProps = BaseModalProps &
 
         /** Whether we should close when browser navigation change. This doesn't affect native platform */
         shouldCloseWhenBrowserNavigationChanged?: boolean;
+
+        /** Whether the Popover overlay should capture outside clicks */
+        shouldCloseOnOutsideClick?: boolean;
     };
 
 export default PopoverProps;

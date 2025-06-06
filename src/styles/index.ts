@@ -3246,6 +3246,16 @@ const styles = (theme: ThemeColors) =>
             top: -9999,
         },
 
+        fixedInvisiblePopoverOverlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0)',
+            zIndex: variables.popoverZIndex,
+        },
+
         containerWithSpaceBetween: {
             justifyContent: 'space-between',
             width: '100%',

@@ -8,7 +8,6 @@ import useStyleUtils from '@hooks/useStyleUtils';
 import useThemeStyles from '@hooks/useThemeStyles';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import {onModalDidClose, setCloseModal, willAlertModalBecomeVisible} from '@libs/actions/Modal';
-import variables from '@styles/variables';
 import viewRef from '@src/types/utils/viewRef';
 import type PopoverWithoutOverlayProps from './types';
 
@@ -24,6 +23,7 @@ function PopoverWithoutOverlay(
         onClose,
         onModalHide = () => {},
         children,
+        shouldCloseOnOutsideClick,
     }: PopoverWithoutOverlayProps,
     ref: ForwardedRef<View>,
 ) {
@@ -85,27 +85,41 @@ function PopoverWithoutOverlay(
         [StyleUtils, insets, modalContainerStyle, shouldAddBottomSafeAreaMargin, shouldAddBottomSafeAreaPadding, shouldAddTopSafeAreaMargin, shouldAddTopSafeAreaPadding],
     );
 
+    const handleOutsideClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (e.target !== e.currentTarget) {
+            return;
+        }
+        onClose();
+    };
+
     if (!isVisible) {
         return null;
     }
 
     return (
         <View
-            style={[modalStyle, {zIndex: variables.popoverZIndex}]}
-            ref={viewRef(withoutOverlayRef)}
-            // Prevent the parent element to capture a click. This is useful when the modal component is put inside a pressable.
-            onClick={(e) => e.stopPropagation()}
+            style={shouldCloseOnOutsideClick && styles.fixedInvisiblePopoverOverlay}
+            onClick={handleOutsideClick}
             dataSet={{dragArea: false}}
         >
             <View
-                style={{
-                    ...styles.defaultModalContainer,
-                    ...modalContainerStyle,
-                    ...modalPaddingStyles,
-                }}
-                ref={ref}
+                style={modalStyle}
+                ref={viewRef(withoutOverlayRef)}
+                // Prevent the parent element to capture a click. This is useful when the modal component is put inside a pressable.
+                onClick={(e) => e.stopPropagation()}
+                dataSet={{dragArea: false}}
             >
-                <ColorSchemeWrapper>{children}</ColorSchemeWrapper>
+                <View
+                    style={{
+                        ...styles.defaultModalContainer,
+                        ...modalContainerStyle,
+                        ...modalPaddingStyles,
+                    }}
+                    ref={ref}
+                >
+                    <ColorSchemeWrapper>{children}</ColorSchemeWrapper>
+                </View>
             </View>
         </View>
     );

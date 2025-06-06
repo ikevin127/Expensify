@@ -108,9 +108,6 @@ type PopoverMenuProps = Partial<PopoverModalProps> & {
     /** Where the popover should be positioned relative to the anchor points. */
     anchorAlignment?: AnchorAlignment;
 
-    /** Whether we don't want to show overlay */
-    withoutOverlay?: boolean;
-
     /** Should we announce the Modal visibility changes? */
     shouldSetModalVisibility?: boolean;
 
@@ -158,6 +155,9 @@ type PopoverMenuProps = Partial<PopoverModalProps> & {
 
     /** Used to locate the component in the tests */
     testID?: string;
+
+    /** Should we close Popover on outside click */
+    shouldCloseOnOutsideClick?: boolean;
 };
 
 const renderWithConditionalWrapper = (shouldUseScrollView: boolean, contentContainerStyle: StyleProp<ViewStyle>, children: ReactNode): React.JSX.Element => {
@@ -194,7 +194,6 @@ function PopoverMenu({
     animationInTiming = CONST.ANIMATED_TRANSITION,
     animationOutTiming,
     disableAnimation = true,
-    withoutOverlay = false,
     shouldSetModalVisibility = true,
     shouldEnableNewFocusManagement,
     restoreFocusType,
@@ -208,6 +207,7 @@ function PopoverMenu({
     shouldUpdateFocusedIndex = true,
     shouldUseModalPaddingStyle,
     shouldAvoidSafariException = false,
+    shouldCloseOnOutsideClick = true,
     testID,
 }: PopoverMenuProps) {
     const styles = useThemeStyles();
@@ -415,7 +415,6 @@ function PopoverMenu({
             animationOutTiming={animationOutTiming}
             disableAnimation={disableAnimation}
             fromSidebarMediumScreen={fromSidebarMediumScreen}
-            withoutOverlay={withoutOverlay}
             shouldSetModalVisibility={shouldSetModalVisibility}
             shouldEnableNewFocusManagement={shouldEnableNewFocusManagement}
             useNativeDriver
@@ -423,6 +422,7 @@ function PopoverMenu({
             innerContainerStyle={innerContainerStyle}
             shouldUseModalPaddingStyle={shouldUseModalPaddingStyle}
             testID={testID}
+            shouldCloseOnOutsideClick={shouldCloseOnOutsideClick}
         >
             <FocusTrapForModal active={isVisible}>
                 <View
@@ -454,7 +454,6 @@ export default React.memo(
         prevProps.animationOut === nextProps.animationOut &&
         prevProps.animationInTiming === nextProps.animationInTiming &&
         prevProps.disableAnimation === nextProps.disableAnimation &&
-        prevProps.withoutOverlay === nextProps.withoutOverlay &&
         prevProps.shouldSetModalVisibility === nextProps.shouldSetModalVisibility,
 );
 export type {PopoverMenuItem, PopoverMenuProps};

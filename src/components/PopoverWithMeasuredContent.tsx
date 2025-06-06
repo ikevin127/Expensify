@@ -29,6 +29,9 @@ type PopoverWithMeasuredContentProps = Omit<PopoverProps, 'anchorPosition'> & {
 
     /** Whether we should should use top side for the anchor positioning */
     shouldMeasureAnchorPositionFromTop?: boolean;
+
+    /** Should we close Popover on outside click */
+    shouldCloseOnOutsideClick?: boolean;
 };
 
 /**
@@ -50,9 +53,8 @@ function PopoverWithMeasuredContent({
         vertical: CONST.MODAL.ANCHOR_ORIGIN_VERTICAL.BOTTOM,
     },
     children,
-    withoutOverlay = false,
     fullscreen = true,
-    shouldCloseOnOutsideClick = false,
+    shouldCloseOnOutsideClick = true,
     shouldSetModalVisibility = true,
     statusBarTranslucent = true,
     navigationBarTranslucent = true,
@@ -173,7 +175,6 @@ function PopoverWithMeasuredContent({
             popoverDimensions={{height: popoverHeight, width: popoverWidth}}
             anchorAlignment={anchorAlignment}
             isVisible={isVisible}
-            withoutOverlay={withoutOverlay}
             fullscreen={fullscreen}
             shouldCloseOnOutsideClick={shouldCloseOnOutsideClick}
             shouldSetModalVisibility={shouldSetModalVisibility}

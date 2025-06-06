@@ -22,12 +22,12 @@ function Popover(props: PopoverProps) {
         onLayout,
         animationOutTiming,
         disableAnimation = true,
-        withoutOverlay = false,
         anchorPosition = {},
         anchorRef = () => {},
         animationIn = 'fadeIn',
         animationOut = 'fadeOut',
         shouldCloseWhenBrowserNavigationChanged = true,
+        shouldCloseOnOutsideClick = true,
     } = props;
 
     // We need to use isSmallScreenWidth to apply the correct modal type and popoverAnchorPosition
@@ -81,7 +81,7 @@ function Popover(props: PopoverProps) {
         );
     }
 
-    if (withoutOverlay && !shouldUseNarrowLayout) {
+    if (!shouldUseNarrowLayout) {
         return createPortal(
             <PopoverWithoutOverlay
                 // eslint-disable-next-line react/jsx-props-no-spreading
@@ -89,6 +89,7 @@ function Popover(props: PopoverProps) {
                 withoutOverlayRef={withoutOverlayRef}
                 animationIn={animationIn}
                 animationOut={animationOut}
+                shouldCloseOnOutsideClick={shouldCloseOnOutsideClick}
             />,
             document.body,
         );

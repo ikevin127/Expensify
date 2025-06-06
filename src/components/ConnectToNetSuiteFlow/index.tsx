@@ -77,7 +77,6 @@ function ConnectToNetSuiteFlow({policyID}: ConnectToNetSuiteFlowProps) {
                 onClose={() => {
                     setIsReuseConnectionsPopoverOpen(false);
                 }}
-                withoutOverlay
                 menuItems={connectionOptions}
                 onItemSelected={(item) => {
                     if (!item?.onSelected) {

@@ -25,6 +25,9 @@ type PopoverWithoutOverlayProps = ChildrenProps &
 
         /** The ref of the popover */
         withoutOverlayRef: RefObject<View | HTMLDivElement>;
+
+        /** Whether the Popover overlay should capture outside clicks */
+        shouldCloseOnOutsideClick?: boolean;
     };
 
 export default PopoverWithoutOverlayProps;
