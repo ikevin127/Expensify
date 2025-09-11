@@ -116,7 +116,7 @@ function EditReportFieldPage({route}: EditReportFieldPageProps) {
                 shouldEnableNewFocusManagement
             />
 
-            {(reportField.type === 'text' || isReportFieldTitle) && (
+            {(reportField.type === CONST.REPORT_FIELD_TYPES.TEXT || reportField.type === CONST.REPORT_FIELD_TYPES.FORMULA || isReportFieldTitle) && (
                 <EditReportFieldText
                     fieldName={Str.UCFirst(reportField.name)}
                     fieldKey={fieldKey}
@@ -126,7 +126,7 @@ function EditReportFieldPage({route}: EditReportFieldPageProps) {
                 />
             )}
 
-            {reportField.type === 'date' && (
+            {reportField.type === CONST.REPORT_FIELD_TYPES.DATE && (
                 <EditReportFieldDate
                     fieldName={Str.UCFirst(reportField.name)}
                     fieldKey={fieldKey}
@@ -136,7 +136,7 @@ function EditReportFieldPage({route}: EditReportFieldPageProps) {
                 />
             )}
 
-            {reportField.type === 'dropdown' && (
+            {reportField.type === CONST.REPORT_FIELD_TYPES.LIST && (
                 <EditReportFieldDropdown
                     fieldKey={fieldKey}
                     fieldValue={fieldValue}
