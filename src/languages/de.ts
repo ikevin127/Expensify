@@ -5213,6 +5213,8 @@ _Für ausführlichere Anweisungen [besuchen Sie unsere Hilfeseite](${CONST.NETSU
                         body: 'Sie können die zentrale Rechnungsstellung nicht deaktivieren, solange Sie noch einen offenen Reisebetrag haben. Bitte begleichen Sie zuerst Ihren Betrag.',
                         confirm: 'Verstanden',
                     },
+                    exportToPDF: 'Als PDF exportieren',
+                    exportToCSV: 'Als CSV exportieren',
                 },
             },
             expensifyCard: {

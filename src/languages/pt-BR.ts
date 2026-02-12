@@ -5186,6 +5186,8 @@ _Para instruções mais detalhadas, [visite nossa central de ajuda](${CONST.NETS
                         body: 'Você não pode desativar a Faturação Central enquanto ainda tiver um saldo de viagem em aberto. Por favor, pague seu saldo primeiro.',
                         confirm: 'Entendi',
                     },
+                    exportToPDF: 'Exportar para PDF',
+                    exportToCSV: 'Exportar para CSV',
                 },
             },
             expensifyCard: {

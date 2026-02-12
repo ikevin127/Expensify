@@ -5172,9 +5172,9 @@ const translations = {
                         body: "You can't turn off Central Invoicing while you still have an outstanding travel balance. Please pay your balance first.",
                         confirm: 'Got it',
                     },
+                    exportToPDF: 'Export to PDF',
+                    exportToCSV: 'Export to CSV',
                 },
-                exportToPDF: 'Export to PDF',
-                exportToCSV: 'Export to CSV',
             },
             expensifyCard: {
                 title: 'Expensify Card',

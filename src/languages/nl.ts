@@ -5191,6 +5191,8 @@ _Voor meer gedetailleerde instructies, [bezoek onze help-site](${CONST.NETSUITE_
                         body: 'Je kunt Centrale facturatie niet uitschakelen zolang je nog een openstaand reissaldo hebt. Betaal eerst je saldo.',
                         confirm: 'Begrepen',
                     },
+                    exportToPDF: 'Exporteren naar PDF',
+                    exportToCSV: 'Exporteren naar CSV',
                 },
             },
             expensifyCard: {

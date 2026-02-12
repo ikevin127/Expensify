@@ -5078,6 +5078,8 @@ _如需更详细的说明，请[访问我们的帮助网站](${CONST.NETSUITE_IM
                     },
                     disableModal: {title: '关闭差旅开票？', body: '已预订的酒店和租车可以使用不同的卡重新预订，以避免被拒绝提供服务。', confirm: '关闭'},
                     outstandingBalanceModal: {title: '无法关闭差旅开票', body: '在仍有未结清的差旅余额时，您无法关闭集中开票。请先支付您的余额。', confirm: '明白了'},
+                    exportToPDF: '导出为 PDF',
+                    exportToCSV: '导出为 CSV',
                 },
             },
             expensifyCard: {

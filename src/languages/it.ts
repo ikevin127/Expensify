@@ -5201,6 +5201,8 @@ _Per istruzioni più dettagliate, [visita il nostro sito di assistenza](${CONST.
                         body: 'Non puoi disattivare la Fatturazione Centrale finché hai ancora un saldo viaggio in sospeso. Per favore, salda prima il tuo saldo.',
                         confirm: 'Capito',
                     },
+                    exportToPDF: 'Esporta in PDF',
+                    exportToCSV: 'Esporta in CSV',
                 },
             },
             expensifyCard: {

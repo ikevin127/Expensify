@@ -4954,6 +4954,8 @@ ${amount} para ${merchant} - ${date}`,
                         body: 'No puedes desactivar la facturación central mientras todavía tengas un saldo de viajes pendiente. Por favor, paga tu saldo primero.',
                         confirm: 'Entendido',
                     },
+                    exportToPDF: 'Exportar a PDF',
+                    exportToCSV: 'Exportar a CSV',
                 },
             },
             expensifyCard: {

@@ -5180,6 +5180,8 @@ _Aby uzyskać bardziej szczegółowe instrukcje, [odwiedź naszą stronę pomocy
                         body: 'Nie możesz wyłączyć centralnego fakturowania, dopóki masz nieuregulowane saldo za podróż. Najpierw ureguluj swoje saldo.',
                         confirm: 'Rozumiem',
                     },
+                    exportToPDF: 'Eksportuj do PDF',
+                    exportToCSV: 'Eksportuj do CSV',
                 },
             },
             expensifyCard: {

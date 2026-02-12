@@ -5229,6 +5229,8 @@ _Pour des instructions plus détaillées, [visitez notre site d’aide](${CONST.
                         body: "Vous ne pouvez pas désactiver la facturation centrale tant qu'il vous reste un solde de voyage impayé. Veuillez d'abord régler votre solde.",
                         confirm: 'Compris',
                     },
+                    exportToPDF: 'Exporter en PDF',
+                    exportToCSV: 'Exporter en CSV',
                 },
             },
             expensifyCard: {

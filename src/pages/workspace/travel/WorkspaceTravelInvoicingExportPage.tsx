@@ -140,14 +140,14 @@ function WorkspaceTravelInvoicingExportPage({route}: WorkspaceTravelInvoicingExp
                     {!selectedDateModifier ? (
                         <>
                             <Button
-                                text={translate('workspace.moreFeatures.travel.exportToPDF')}
+                                text={translate('workspace.moreFeatures.travel.travelInvoicing.exportToPDF')}
                                 onPress={() => handleDownload('pdf')}
                                 large
                                 style={styles.mb3}
                             />
                             <Button
                                 success
-                                text={translate('workspace.moreFeatures.travel.exportToCSV')}
+                                text={translate('workspace.moreFeatures.travel.travelInvoicing.exportToCSV')}
                                 onPress={() => handleDownload('csv')}
                                 large
                             />
