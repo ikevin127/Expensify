@@ -5173,6 +5173,8 @@ const translations = {
                         confirm: 'Got it',
                     },
                 },
+                exportToPDF: 'Export to PDF',
+                exportToCSV: 'Export to CSV',
             },
             expensifyCard: {
                 title: 'Expensify Card',

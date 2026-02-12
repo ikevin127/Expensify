@@ -1,10 +1,13 @@
 import Onyx from 'react-native-onyx';
 import type {OnyxUpdate} from 'react-native-onyx';
 import type {ValueOf} from 'type-fest';
+import type {LocalizedTranslate} from '@components/LocaleContextProvider';
 import * as API from '@libs/API';
 import type {OpenPolicyTravelPageParams, SetTravelInvoicingSettlementAccountParams, ToggleTravelInvoicingParams, UpdateTravelInvoicingSettlementFrequencyParams} from '@libs/API/parameters';
 import {READ_COMMANDS, WRITE_COMMANDS} from '@libs/API/types';
+import {getCommandURL} from '@libs/ApiUtils';
 import * as ErrorUtils from '@libs/ErrorUtils';
+import fileDownload from '@libs/fileDownload';
 import {getTravelInvoicingCardSettingsKey} from '@libs/TravelInvoicingUtils';
 import CONST from '@src/CONST';
 import ONYXKEYS from '@src/ONYXKEYS';
@@ -311,6 +314,20 @@ function clearToggleTravelInvoicingErrors(workspaceAccountID: number) {
     });
 }
 
+/**
+ * Downloads the Travel Invoice Statement for a policy and period.
+ */
+function getTravelInvoiceStatement(policyID: string, period: string, type: 'csv' | 'pdf', translate: LocalizedTranslate) {
+    const formData = new FormData();
+    formData.append('policyID', policyID);
+    formData.append('period', period);
+    formData.append('type', type);
+
+    const commandURL = getCommandURL({command: WRITE_COMMANDS.GET_TRAVEL_INVOICING_PAYMENTS});
+    const filename = `Travel_Statement_${period}.${type}`;
+    fileDownload(translate, commandURL, filename, '', false, formData, CONST.NETWORK.METHOD.POST);
+}
+
 export {
     openPolicyTravelPage,
     setTravelInvoicingSettlementAccount,
@@ -319,4 +336,5 @@ export {
     updateTravelInvoiceSettlementFrequency,
     toggleTravelInvoicing,
     clearToggleTravelInvoicingErrors,
+    getTravelInvoiceStatement,
 };
