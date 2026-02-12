@@ -1,6 +1,7 @@
 import {format} from 'date-fns';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {View} from 'react-native';
+import FullPageOfflineBlockingView from '@components/BlockingViews/FullPageOfflineBlockingView';
 import Button from '@components/Button';
 import FormAlertWithSubmitButton from '@components/FormAlertWithSubmitButton';
 import HeaderWithBackButton from '@components/HeaderWithBackButton';
@@ -16,9 +17,10 @@ import Navigation from '@libs/Navigation/Navigation';
 import type {PlatformStackScreenProps} from '@libs/Navigation/PlatformStackNavigation/types';
 import type {SettingsNavigatorParamList} from '@libs/Navigation/types';
 import {isSearchDatePreset} from '@libs/SearchQueryUtils';
-import {getDateRangeForPreset, SearchDateModifier} from '@libs/SearchUIUtils';
+import {getDateRangeForPreset} from '@libs/SearchUIUtils';
+import type {SearchDateModifier} from '@libs/SearchUIUtils';
 import CONST from '@src/CONST';
-import SCREENS from '@src/SCREENS';
+import type SCREENS from '@src/SCREENS';
 
 type WorkspaceTravelInvoicingExportPageProps = PlatformStackScreenProps<SettingsNavigatorParamList, typeof SCREENS.WORKSPACE.TRAVEL_EXPORT>;
 
@@ -91,15 +93,15 @@ function WorkspaceTravelInvoicingExportPage({route}: WorkspaceTravelInvoicingExp
             if (isSearchDatePreset(dateOn)) {
                 const range = getDateRangeForPreset(dateOn);
                 // For presets like "This month", keep yyyyMM
-                formattedPeriod = range.start.replace(/-/g, '').substring(0, 6);
+                formattedPeriod = range.start.replaceAll('-', '').substring(0, 6);
             } else {
                 // Specific date "On" -> yyyyMMdd
-                formattedPeriod = dateOn.replace(/-/g, '');
+                formattedPeriod = dateOn.replaceAll('-', '');
             }
         } else if (dateAfter || dateBefore) {
             // Range handling: start-end format with yyyyMMdd
-            const start = dateAfter ? dateAfter.replace(/-/g, '') : '';
-            const end = dateBefore ? dateBefore.replace(/-/g, '') : '';
+            const start = dateAfter ? dateAfter.replaceAll('-', '') : '';
+            const end = dateBefore ? dateBefore.replaceAll('-', '') : '';
             formattedPeriod = `${start}-${end}`;
         } else {
             // Default to this month
@@ -123,48 +125,50 @@ function WorkspaceTravelInvoicingExportPage({route}: WorkspaceTravelInvoicingExp
                 title={computedTitle}
                 onBackButtonPress={goBack}
             />
-            <ScrollView contentContainerStyle={styles.flexGrow1}>
-                <DatePresetFilterBase
-                    ref={searchDatePresetFilterBaseRef}
-                    defaultDateValues={defaultDateValues}
-                    selectedDateModifier={selectedDateModifier}
-                    onSelectDateModifier={setSelectedDateModifier}
-                    presets={presets}
-                />
-            </ScrollView>
-            <View style={[styles.ph5, styles.pb5]}>
-                {/* When date modifier is set (On, After and Before) show Reset / Save buttons, otherwise show Export buttons */}
-                {!!selectedDateModifier ? (
-                    <>
-                        <Button
-                            text={translate('common.reset')}
-                            onPress={reset}
-                            style={styles.mb3}
-                            large
-                        />
-                        <FormAlertWithSubmitButton
-                            buttonText={translate('common.save')}
-                            onSubmit={save}
-                            enabledWhenOffline
-                        />
-                    </>
-                ) : (
-                    <>
-                        <Button
-                            text={translate('workspace.moreFeatures.travel.exportToPDF')}
-                            onPress={() => handleDownload('pdf')}
-                            large
-                            style={styles.mb3}
-                        />
-                        <Button
-                            success
-                            text={translate('workspace.moreFeatures.travel.exportToCSV')}
-                            onPress={() => handleDownload('csv')}
-                            large
-                        />
-                    </>
-                )}
-            </View>
+            <FullPageOfflineBlockingView>
+                <ScrollView contentContainerStyle={styles.flexGrow1}>
+                    <DatePresetFilterBase
+                        ref={searchDatePresetFilterBaseRef}
+                        defaultDateValues={defaultDateValues}
+                        selectedDateModifier={selectedDateModifier}
+                        onSelectDateModifier={setSelectedDateModifier}
+                        presets={presets}
+                    />
+                </ScrollView>
+                <View style={[styles.ph5, styles.pb5]}>
+                    {/* When date modifier is set (On, After and Before) show Reset / Save buttons, otherwise show Export buttons */}
+                    {!selectedDateModifier ? (
+                        <>
+                            <Button
+                                text={translate('workspace.moreFeatures.travel.exportToPDF')}
+                                onPress={() => handleDownload('pdf')}
+                                large
+                                style={styles.mb3}
+                            />
+                            <Button
+                                success
+                                text={translate('workspace.moreFeatures.travel.exportToCSV')}
+                                onPress={() => handleDownload('csv')}
+                                large
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <Button
+                                text={translate('common.reset')}
+                                onPress={reset}
+                                style={styles.mb3}
+                                large
+                            />
+                            <FormAlertWithSubmitButton
+                                buttonText={translate('common.save')}
+                                onSubmit={save}
+                                enabledWhenOffline
+                            />
+                        </>
+                    )}
+                </View>
+            </FullPageOfflineBlockingView>
         </ScreenWrapper>
     );
 }
